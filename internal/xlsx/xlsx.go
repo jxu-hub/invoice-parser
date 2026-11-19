@@ -1,12 +1,13 @@
 // Package xlsx 是一个最小可用的 xlsx 读取器。
 //
 // 只依赖标准库：xlsx 本质是一个 zip，里面是若干 XML。
-// 这一版只做两件事：
+// 这里只做三件事，但都是解析脏表格必须的：
 //
 //  1. 按 workbook -> rels -> worksheet 的顺序找到第一张工作表（不硬编码 sheet1.xml）
 //  2. 支持 sharedStrings / inlineStr / 数字三种单元格
+//  3. 读回合并单元格区域，交给上层决定怎么展平
 //
-// 合并单元格、样式、公式都还没读 —— 现在的解析器用不到。
+// 不支持公式求值、样式、多工作表选择：这个项目不需要，也不需要为此引入第三方依赖。
 package xlsx
 
 import (
@@ -19,11 +20,18 @@ import (
 	"strings"
 )
 
+// Range 是一个合并单元格区域，行列均为 0-based、闭区间。
+type Range struct {
+	R1, C1, R2, C2 int
+}
+
 // Sheet 是读出来的工作表。
-// Rows 已经补齐成矩形：短行会用空字符串填充，方便按列访问。
+// Rows 已经补齐成矩形：短行会用空字符串填充，方便按列访问；
+// 合并区域的左上角保留值，其余格子在 Rows 里仍是空串，展平交给 sheet 包。
 type Sheet struct {
-	Name string
-	Rows [][]string
+	Name   string
+	Rows   [][]string
+	Merges []Range
 }
 
 var errNoSheet = fmt.Errorf("xlsx: workbook 里没有工作表")
@@ -41,7 +49,7 @@ func Open(file string) (*Sheet, error) {
 		files[f.Name] = f
 	}
 
-	name, sheetPath, err := locateFirstSheet(files)
+	name, sheetPath, err := locateFirstSheet(zr, files)
 	if err != nil {
 		return nil, err
 	}
@@ -55,12 +63,12 @@ func Open(file string) (*Sheet, error) {
 	if !ok {
 		return nil, fmt.Errorf("xlsx: 缺少工作表文件 %q", sheetPath)
 	}
-	rows, err := readSheet(f, shared)
+	rows, merges, err := readSheet(f, shared)
 	if err != nil {
 		return nil, fmt.Errorf("xlsx: 解析 %s: %w", sheetPath, err)
 	}
 
-	return &Sheet{Name: name, Rows: rows}, nil
+	return &Sheet{Name: name, Rows: rows, Merges: merges}, nil
 }
 
 type workbookXML struct {
@@ -79,7 +87,7 @@ type relsXML struct {
 
 // locateFirstSheet 顺着 workbook + rels 找到第一张工作表的真实路径。
 // 找不到关系表时退回 sheet1.xml —— 有些导出工具不写 rels。
-func locateFirstSheet(files map[string]*zip.File) (name, p string, err error) {
+func locateFirstSheet(zr *zip.ReadCloser, files map[string]*zip.File) (name, p string, err error) {
 	def := "xl/worksheets/sheet1.xml"
 	f, ok := files["xl/workbook.xml"]
 	if !ok {
@@ -175,7 +183,8 @@ func readSharedStrings(files map[string]*zip.File) ([]string, error) {
 }
 
 type sheetXML struct {
-	Rows []xRow `xml:"sheetData>row"`
+	Rows       []xRow   `xml:"sheetData>row"`
+	MergeCells []xMerge `xml:"mergeCells>mergeCell"`
 }
 
 type xRow struct {
@@ -190,16 +199,20 @@ type xCell struct {
 	IS xString `xml:"is"`
 }
 
-func readSheet(f *zip.File, shared []string) ([][]string, error) {
+type xMerge struct {
+	Ref string `xml:"ref,attr"`
+}
+
+func readSheet(f *zip.File, shared []string) ([][]string, []Range, error) {
 	rc, err := f.Open()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	defer rc.Close()
 
 	var s sheetXML
 	if err := xml.NewDecoder(rc).Decode(&s); err != nil && err != io.EOF {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// 先定位最大行列，避免一边扩容一边填。
@@ -255,7 +268,14 @@ func readSheet(f *zip.File, shared []string) ([][]string, error) {
 			row[col] = c.value(shared)
 		}
 	}
-	return grid, nil
+
+	merges := make([]Range, 0, len(s.MergeCells))
+	for _, m := range s.MergeCells {
+		if r, err := parseRange(m.Ref); err == nil {
+			merges = append(merges, r)
+		}
+	}
+	return grid, merges, nil
 }
 
 func (c xCell) value(shared []string) string {
@@ -318,6 +338,22 @@ func splitRef(ref string) (row, col int, err error) {
 		return 0, 0, fmt.Errorf("bad ref %q", ref)
 	}
 	return r - 1, col, nil
+}
+
+func parseRange(ref string) (Range, error) {
+	parts := strings.Split(ref, ":")
+	if len(parts) != 2 {
+		return Range{}, fmt.Errorf("bad merge %q", ref)
+	}
+	r1, c1, err := splitRef(parts[0])
+	if err != nil {
+		return Range{}, err
+	}
+	r2, c2, err := splitRef(parts[1])
+	if err != nil {
+		return Range{}, err
+	}
+	return Range{R1: r1, C1: c1, R2: r2, C2: c2}, nil
 }
 
 func isLetter(b byte) bool { return b >= 'A' && b <= 'Z' || b >= 'a' && b <= 'z' }

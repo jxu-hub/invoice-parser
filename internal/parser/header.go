@@ -15,7 +15,10 @@ const (
 
 // DetectHeader 找真表头所在的行。
 //
-// 做法是先筛候选，再打分：非空单元格太少的是标题行/制表人行/空行，
+// 做法是先筛候选，再打分：
+//   - 非空单元格太少 → 标题行 / 制表人行 / 空行
+//   - 有跨列合并 → 组表头，真表头在下面
+//
 // 剩下的行按 SplitScore 排序，分数最低的就是表头。
 //
 // 为什么不能只看"下面数据一不一致"：任意一行数据行作为表头，
@@ -33,6 +36,11 @@ func DetectHeader(t *sheet.Table) (row int, score float64, ok bool) {
 			break
 		}
 		if t.NonEmpty(r) < minHeaderCells {
+			continue
+		}
+		// 跨列合并的行是"订单信息 / 金额与数量"这类组表头，
+		// 真表头在它下面。这里显式跳过，不靠它分数低。
+		if t.MergedRow[r] {
 			continue
 		}
 		s := SplitScore(t, r)
