@@ -1,0 +1,13 @@
+# 跑批产物
+parsed/
+inbox/
+.collector/
+
+# 本地构建
+/invoice-parser
+/cmd/collector/collector
+*.test
+*.out
+
+# 系统垃圾
+.DS_Store

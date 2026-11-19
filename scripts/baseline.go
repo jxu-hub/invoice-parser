@@ -1,9 +1,10 @@
-// Command baseline 跑全量测试表，对比新旧两版实现的一次通过率。
+// Command baseline 跑全量测试表，对比旧实现和新实现的一次通过率。
 //
 // 这个脚本是整个仓库的地基：任何一次改动都要能回答"成功率变了没有、
 // 把哪些表弄挂了"。没有它，改解析器就是凭手感。
 //
 //	go run ./scripts/baseline.go -manifest testdata/manifest.json
+//	go run ./scripts/baseline.go -manifest testdata/manifest.json -md RESULTS.md
 package main
 
 import (
@@ -27,7 +28,8 @@ type outcome struct {
 
 func main() {
 	mfPath := flag.String("manifest", "testdata/manifest.json", "清单文件")
-	show := flag.Int("show", 6, "每类最多显示多少条失败明细")
+	mdOut := flag.String("md", "", "把结果额外写成 markdown 文件")
+	show := flag.Int("show", 8, "每类最多显示多少条失败明细")
 	flag.Parse()
 
 	base := filepath.Dir(*mfPath)
@@ -36,16 +38,22 @@ func main() {
 		fatal(err)
 	}
 
-	oldOut := make([]outcome, 0, len(sheets))
-	newOut := make([]outcome, 0, len(sheets))
+	v1 := make([]outcome, 0, len(sheets))
+	v2 := make([]outcome, 0, len(sheets))
 	for _, s := range sheets {
 		raw := filepath.Join(base, s.File)
 		want := filepath.Join(base, s.Golden)
-		oldOut = append(oldOut, outcome{entry: s, err: check(raw, want, runLegacy)})
-		newOut = append(newOut, outcome{entry: s, err: check(raw, want, runCurrent)})
+		v1 = append(v1, outcome{entry: s, err: check(raw, want, runLegacy)})
+		v2 = append(v2, outcome{entry: s, err: check(raw, want, runCurrent)})
 	}
 
-	fmt.Print(render(sheets, oldOut, newOut, *show))
+	report := render(sheets, v1, v2, *show)
+	fmt.Print(report)
+	if *mdOut != "" {
+		if err := os.WriteFile(*mdOut, []byte(report), 0o644); err != nil {
+			fatal(err)
+		}
+	}
 }
 
 func check(rawPath, goldenPath string, run func(string) ([]parser.Row, error)) error {
@@ -90,28 +98,32 @@ func passes(os []outcome) int {
 	return n
 }
 
-func render(sheets []golden.Sheet, oldOut, newOut []outcome, show int) string {
+func render(sheets []golden.Sheet, v1, v2 []outcome, show int) string {
 	var b strings.Builder
 	total := len(sheets)
 
-	fmt.Fprintf(&b, "invoice-parser baseline\nsheets: %d\n\n", total)
+	fmt.Fprintf(&b, "invoice-parser baseline\n")
+	fmt.Fprintf(&b, "sheets: %d\n\n", total)
 	fmt.Fprintf(&b, "%-14s %6s %6s %9s\n", "", "pass", "fail", "rate")
-	fmt.Fprintf(&b, "%-14s %6d %6d %8.1f%%\n", "v1 (legacy)", passes(oldOut), total-passes(oldOut), rate(passes(oldOut), total))
-	fmt.Fprintf(&b, "%-14s %6d %6d %8.1f%%\n", "v2 (current)", passes(newOut), total-passes(newOut), rate(passes(newOut), total))
+	fmt.Fprintf(&b, "%-14s %6d %6d %8.1f%%\n", "v1 (legacy)", passes(v1), total-passes(v1), rate(passes(v1), total))
+	fmt.Fprintf(&b, "%-14s %6d %6d %8.1f%%\n", "v2 (current)", passes(v2), total-passes(v2), rate(passes(v2), total))
 
 	classes := classSet(sheets)
-	fmt.Fprintf(&b, "\nby class\n%-10s %6s %9s %9s\n", "class", "total", "v1 fail", "v2 fail")
+	fmt.Fprintf(&b, "\nby class\n")
+	fmt.Fprintf(&b, "%-10s %6s %9s %9s\n", "class", "total", "v1 fail", "v2 fail")
 	for _, c := range classes {
-		t, f1, f2 := classStats(sheets, oldOut, newOut, c)
+		t, f1, f2 := classStats(sheets, v1, v2, c)
 		fmt.Fprintf(&b, "%-10s %6d %9d %9d\n", c, t, f1, f2)
 	}
 
 	for _, c := range classes {
-		if lines := failuresOf(oldOut, newOut, c, show); len(lines) > 0 {
-			fmt.Fprintf(&b, "\nv1 失败明细 [%s]\n", c)
-			for _, l := range lines {
-				fmt.Fprintf(&b, "  %s\n", l)
-			}
+		lines := failuresOf(v1, v2, c, show)
+		if len(lines) == 0 {
+			continue
+		}
+		fmt.Fprintf(&b, "\nv1 失败明细 [%s]\n", c)
+		for _, l := range lines {
+			fmt.Fprintf(&b, "  %s\n", l)
 		}
 	}
 	return b.String()
@@ -137,26 +149,26 @@ func classSet(sheets []golden.Sheet) []string {
 	return out
 }
 
-func classStats(sheets []golden.Sheet, oldOut, newOut []outcome, class string) (total, f1, f2 int) {
+func classStats(sheets []golden.Sheet, v1, v2 []outcome, class string) (total, f1, f2 int) {
 	for i, s := range sheets {
 		if s.Label != class {
 			continue
 		}
 		total++
-		if oldOut[i].err != nil {
+		if v1[i].err != nil {
 			f1++
 		}
-		if newOut[i].err != nil {
+		if v2[i].err != nil {
 			f2++
 		}
 	}
 	return total, f1, f2
 }
 
-func failuresOf(oldOut, newOut []outcome, class string, limit int) []string {
+func failuresOf(v1, v2 []outcome, class string, limit int) []string {
 	var out []string
 	matched := 0
-	for i, o := range oldOut {
+	for i, o := range v1 {
 		if o.err == nil || o.entry.Label != class {
 			continue
 		}
@@ -165,7 +177,7 @@ func failuresOf(oldOut, newOut []outcome, class string, limit int) []string {
 			continue
 		}
 		msg := oneLine(o.err.Error())
-		if i < len(newOut) && newOut[i].err == nil {
+		if i < len(v2) && v2[i].err == nil {
 			msg += "   [v2 已修复]"
 		}
 		out = append(out, fmt.Sprintf("%-34s %s", o.entry.File, msg))
