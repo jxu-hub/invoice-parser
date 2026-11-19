@@ -13,15 +13,15 @@ import (
 const testdata = "../../testdata"
 
 // 当前版本的通过数。每合并一个 PR，这个数只许变大，改小要单独说明原因。
-const currentPasses = 176
+const currentPasses = 197
 
 // expectedFails 是还剩几类没解决。合并 PR 时这张表要跟着往下减。
 var expectedFails = map[string]int{
 	"clean":  0,
 	"header": 0,
 	"merged": 0,
-	"money":  14,
-	"date":   7,
+	"money":  0,
+	"date":   0,
 	"other":  3,
 }
 
