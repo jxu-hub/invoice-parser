@@ -1,4 +1,3 @@
-// Package parser 把表格整理成规范化的订单行。
 package parser
 
 import (
@@ -37,12 +36,21 @@ func (r Row) Fields() []string {
 	}
 }
 
+// IsolatedRow 是被隔离出来的行：这一行解析失败，但不拖垮整张表。
+type IsolatedRow struct {
+	Line   int // 在文件里的行号（1-based），方便人回去看原表
+	Reason string
+	Raw    []string
+}
+
 // Result 是一次解析的结果。
 type Result struct {
 	HeaderRow int
 	Score     float64
 	Schema    Schema
 	Rows      []Row
+	Isolated  []IsolatedRow
+	Skipped   int // 被判定为非数据行（合计行、重复表头、脚注）而跳过的行数
 }
 
 // ErrNoHeader 表示在前 20 行里没找到可信的表头。
@@ -62,10 +70,11 @@ func (e *SchemaError) Error() string {
 	return fmt.Sprintf("parser: 第 %d 行是表头，但缺少字段 %s", e.HeaderRow+1, strings.Join(names, ","))
 }
 
-// Parse 把一张表解析成规范化行。
+// Parse 把一张展平后的表解析成规范化行。
 //
-// 和旧实现的区别：表头不再假设在第 1 行，而是打分选出来的。
-// 值解析仍然是严格的——一行解析不了，整张表还是失败，这一步留到后面再改。
+// 和旧实现的区别只有一条，但是根本性的：单行解析失败不再让整张表失败。
+// 失败的行进 Isolated，带行号和原因，其余行照常输出 —— 200 张表里
+// 平均有 6% 的行需要人工或模型复核，为了这 6% 把 94% 丢掉是不划算的。
 func Parse(t *sheet.Table) (*Result, error) {
 	headerRow, score, ok := DetectHeader(t)
 	if !ok {
@@ -86,14 +95,26 @@ func Parse(t *sheet.Table) (*Result, error) {
 		}
 	}
 
+	headerNames := map[string]bool{}
+	for _, v := range t.Rows[headerRow] {
+		if v != "" {
+			headerNames[NormalizeHeader(v)] = true
+		}
+	}
+
 	for r := headerRow + 1; r < len(t.Rows); r++ {
 		raw := t.Rows[r]
 		if isEmptyRow(raw) {
 			continue
 		}
-		row, err := parseRow(raw, cols)
-		if err != nil {
-			return nil, fmt.Errorf("第 %d 行: %w", r+1, err)
+		if !isDataRow(raw, cols[FieldOrderID].Index, headerNames) {
+			res.Skipped++
+			continue
+		}
+		row, reason := parseRow(raw, cols)
+		if reason != "" {
+			res.Isolated = append(res.Isolated, IsolatedRow{Line: r + 1, Reason: reason, Raw: raw})
+			continue
 		}
 		res.Rows = append(res.Rows, row)
 	}
@@ -179,6 +200,61 @@ func hasField(fs []Field, f Field) bool {
 	return false
 }
 
+// noisePrefixes 是导出表格里固定出现、但不是数据的行。
+// 把它们当数据行处理，结果就是整表失败或者多出几行脏数据。
+var noisePrefixes = []string{
+	"合计", "总计", "小计", "共计",
+	"注", "说明", "数据来源", "制表", "导出时间", "页码",
+	"第", // "第 1 页 / 共 1 页"
+}
+
+// isDataRow 判断一行是不是数据行。
+// 合计行、脚注、中途重复出现的表头都不是 —— 它们的首列不是单号。
+func isDataRow(raw []string, idCol int, headerNames map[string]bool) bool {
+	if isNoiseRow(raw) {
+		return false
+	}
+	if idCol < 0 || idCol >= len(raw) {
+		return false
+	}
+	id := raw[idCol]
+	if headerNames[NormalizeHeader(id)] {
+		return false
+	}
+	if IsID(id) {
+		return true
+	}
+	// 有些表把单号列放在别的列，首列是空的；这种行如果只有一个非空格子，
+	// 基本就是脚注，丢掉。
+	return !onlyOneCell(raw)
+}
+
+// isNoiseRow 判断这一行是不是合计/脚注/页码这类固定噪音。
+func isNoiseRow(raw []string) bool {
+	for _, v := range raw {
+		if v == "" {
+			continue
+		}
+		for _, p := range noisePrefixes {
+			if strings.HasPrefix(v, p) {
+				return true
+			}
+		}
+		return false // 只看第一个非空格子，避免把备注里的"仅供参考"误杀
+	}
+	return false
+}
+
+func onlyOneCell(raw []string) bool {
+	n := 0
+	for _, v := range raw {
+		if v != "" {
+			n++
+		}
+	}
+	return n <= 1
+}
+
 func isEmptyRow(raw []string) bool {
 	for _, v := range raw {
 		if v != "" {
@@ -188,7 +264,7 @@ func isEmptyRow(raw []string) bool {
 	return true
 }
 
-func parseRow(raw []string, cols map[Field]Column) (Row, error) {
+func parseRow(raw []string, cols map[Field]Column) (Row, string) {
 	var row Row
 	get := func(f Field) string {
 		c, ok := cols[f]
@@ -204,20 +280,30 @@ func parseRow(raw []string, cols map[Field]Column) (Row, error) {
 
 	d, err := ParseDate(get(FieldDate))
 	if err != nil {
-		return Row{}, err
+		return Row{}, fmt.Sprintf("日期解析失败: %v", err)
 	}
 	row.Date = FormatDate(d)
 
-	if row.UnitPrice, err = ParseMoney(get(FieldUnitPrice)); err != nil {
-		return Row{}, err
+	price, err := ParseMoney(get(FieldUnitPrice))
+	if err != nil {
+		return Row{}, fmt.Sprintf("单价解析失败: %v", err)
 	}
-	if row.Amount, err = ParseMoney(get(FieldAmount)); err != nil {
-		return Row{}, err
+	row.UnitPrice = price
+
+	amount, err := ParseMoney(get(FieldAmount))
+	if err != nil {
+		return Row{}, fmt.Sprintf("金额解析失败: %v", err)
 	}
+	row.Amount = amount
+
 	qty, err := ParseMoney(get(FieldQty))
 	if err != nil {
-		return Row{}, err
+		return Row{}, fmt.Sprintf("数量解析失败: %v", err)
 	}
 	row.Qty = int(math.Round(qty))
-	return row, nil
+
+	if row.OrderID == "" {
+		return Row{}, "缺少订单编号"
+	}
+	return row, ""
 }

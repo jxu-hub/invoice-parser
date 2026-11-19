@@ -1,11 +1,12 @@
 package parser
 
 import (
+	"fmt"
 	"strings"
 )
 
 // Field 是规范化之后的目标字段。解析器只认这几个字段，
-// 一张表至少要能认出 6 个必填字段，否则判为 schema 不匹配。
+// 一张表至少要能认出 6 个必填字段，否则整表判为 schema 不匹配。
 type Field string
 
 const (
@@ -116,4 +117,34 @@ func (s Schema) Missing() []Field {
 		}
 	}
 	return out
+}
+
+// Change 描述一次 schema 变化。跑批时会把它写进日志：
+// 同一张表如果结构突然变了，通常意味着上游改模板了。
+type Change struct {
+	Field Field
+	What  string
+}
+
+func (c Change) String() string { return fmt.Sprintf("%s: %s", c.Field, c.What) }
+
+// Diff 对比上一次的 schema 和这一次的 schema。
+func Diff(prev, cur Schema) []Change {
+	var changes []Change
+	for _, c := range cur.Columns {
+		old, ok := prev.ColumnOf(c.Field)
+		switch {
+		case !ok:
+			changes = append(changes, Change{Field: c.Field, What: "新增列"})
+		case old.Kind != c.Kind:
+			changes = append(changes,
+				Change{Field: c.Field, What: fmt.Sprintf("类型变化 %s -> %s", old.Kind, c.Kind)})
+		}
+	}
+	for _, o := range prev.Columns {
+		if _, ok := cur.ColumnOf(o.Field); !ok {
+			changes = append(changes, Change{Field: o.Field, What: "原有列消失"})
+		}
+	}
+	return changes
 }

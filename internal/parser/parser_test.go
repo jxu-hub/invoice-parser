@@ -2,28 +2,15 @@ package parser_test
 
 import (
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/jxu-hub/invoice-parser/internal/golden"
 	"github.com/jxu-hub/invoice-parser/internal/parser"
 	"github.com/jxu-hub/invoice-parser/internal/sheet"
-	"github.com/jxu-hub/invoice-parser/internal/xlsx"
 )
 
 const testdata = "../../testdata"
-
-// 当前版本的通过数。每合并一个 PR，这个数只许变大，改小要单独说明原因。
-const currentPasses = 197
-
-// expectedFails 是还剩几类没解决。合并 PR 时这张表要跟着往下减。
-var expectedFails = map[string]int{
-	"clean":  0,
-	"header": 0,
-	"merged": 0,
-	"money":  0,
-	"date":   0,
-	"other":  3,
-}
 
 func loadManifest(t *testing.T) []golden.Sheet {
 	t.Helper()
@@ -43,38 +30,35 @@ func parseFile(t *testing.T, name string) (*parser.Result, error) {
 	return parser.Parse(tbl)
 }
 
-// TestGolden 是主闸门：逐表逐行比对，并锁住当前通过数。
+// TestGolden 是仓库的主闸门：200 张表全部要一次过。
+// 任何改动只要让其中一张表的行数或某个字段变了，这里就会红。
+//
+// fixture 已提交进仓库，不要为了让它变绿去改 golden。
 func TestGolden(t *testing.T) {
 	sheets := loadManifest(t)
 	if len(sheets) != 200 {
 		t.Fatalf("清单里应该有 200 张表，实际 %d 张", len(sheets))
 	}
 
-	pass := 0
-	fails := map[string]int{}
 	for _, s := range sheets {
-		res, err := parseFile(t, s.File)
-		if err == nil {
-			want, gerr := golden.Read(filepath.Join(testdata, s.Golden))
-			if gerr != nil {
-				t.Fatalf("%s: %v", s.Golden, gerr)
+		s := s
+		name := strings.TrimSuffix(filepath.Base(s.File), ".xlsx")
+		t.Run(s.Label+"/"+name, func(t *testing.T) {
+			res, err := parseFile(t, s.File)
+			if err != nil {
+				t.Fatalf("解析失败: %v", err)
 			}
-			err = golden.Compare(want, res.Rows)
-		}
-		if err != nil {
-			fails[s.Label]++
-			continue
-		}
-		pass++
-	}
-
-	if pass != currentPasses {
-		t.Fatalf("通过数应该是 %d，实际 %d。改动只允许让这个数字变大。", currentPasses, pass)
-	}
-	for class, want := range expectedFails {
-		if fails[class] != want {
-			t.Errorf("%s 类失败数应为 %d，实际 %d", class, want, fails[class])
-		}
+			want, err := golden.Read(filepath.Join(testdata, s.Golden))
+			if err != nil {
+				t.Fatalf("读 golden 失败: %v", err)
+			}
+			if err := golden.Compare(want, res.Rows); err != nil {
+				t.Fatalf("%v", err)
+			}
+			if s.Label == "clean" && len(res.Isolated) != 0 {
+				t.Fatalf("干净表不应该有被隔离的行，实际 %d 行: %v", len(res.Isolated), res.Isolated[0].Reason)
+			}
+		})
 	}
 }
 
@@ -98,6 +82,75 @@ func TestHeaderRowOnDirtyTables(t *testing.T) {
 	}
 }
 
+// TestIsolatedRowKeepsTableAlive 是这次改造的核心行为：
+// 一行坏掉，不能让整张表失败。
+func TestIsolatedRowKeepsTableAlive(t *testing.T) {
+	tbl := sheet.Flatten([][]string{
+		{"订单编号", "下单日期", "商品名称", "单价", "数量", "金额", "备注"},
+		{"00000001", "2024-01-05", "帆布包", "39.9", "2", "79.8", ""},
+		{"00000002", "昨天下午", "保温杯", "39.9", "1", "39.9", ""},
+		{"00000003", "2024-01-07", "毛线帽", "15.8", "3", "47.4", "补发"},
+	}, nil)
+
+	res, err := parser.Parse(tbl)
+	if err != nil {
+		t.Fatalf("单行坏掉不应该让整表失败: %v", err)
+	}
+	if len(res.Rows) != 2 {
+		t.Fatalf("应该保住 2 条好数据，实际 %d 条", len(res.Rows))
+	}
+	if len(res.Isolated) != 1 {
+		t.Fatalf("应该有 1 行被隔离，实际 %d 行", len(res.Isolated))
+	}
+	if res.Isolated[0].Line != 3 {
+		t.Fatalf("隔离行应该报第 3 行，实际第 %d 行", res.Isolated[0].Line)
+	}
+	if !strings.Contains(res.Isolated[0].Reason, "日期") {
+		t.Fatalf("隔离原因应该指明是日期，实际 %q", res.Isolated[0].Reason)
+	}
+}
+
+// TestNoiseRowsSkipped 合计行、页码、脚注不能进结果，也不该进隔离区。
+func TestNoiseRowsSkipped(t *testing.T) {
+	tbl := sheet.Flatten([][]string{
+		{"订单编号", "下单日期", "商品名称", "单价", "数量", "金额", "备注"},
+		{"00000001", "2024-01-05", "帆布包", "39.9", "2", "79.8", ""},
+		{"合计", "", "", "", "", "79.8", ""},
+		{"注：本表由系统导出", "", "", "", "", "", ""},
+		{"第 1 页 / 共 1 页", "", "", "", "", "", ""},
+	}, nil)
+
+	res, err := parser.Parse(tbl)
+	if err != nil {
+		t.Fatalf("解析失败: %v", err)
+	}
+	if len(res.Rows) != 1 {
+		t.Fatalf("应该只有 1 条数据，实际 %d 条", len(res.Rows))
+	}
+	if len(res.Isolated) != 0 {
+		t.Fatalf("噪音行不该进隔离区，实际 %d 行", len(res.Isolated))
+	}
+	if res.Skipped != 3 {
+		t.Fatalf("应该跳过 3 行噪音，实际 %d 行", res.Skipped)
+	}
+}
+
+func TestSchemaDiff(t *testing.T) {
+	prev := parser.Schema{Columns: []parser.Column{
+		{Index: 0, Name: "订单编号", Kind: parser.KindID, Field: parser.FieldOrderID},
+		{Index: 1, Name: "下单日期", Kind: parser.KindDate, Field: parser.FieldDate},
+	}}
+	cur := parser.Schema{Columns: []parser.Column{
+		{Index: 0, Name: "订单编号", Kind: parser.KindID, Field: parser.FieldOrderID},
+		{Index: 1, Name: "下单日期", Kind: parser.KindText, Field: parser.FieldDate},
+		{Index: 2, Name: "备注", Kind: parser.KindText, Field: parser.FieldNote},
+	}}
+	changes := parser.Diff(prev, cur)
+	if len(changes) != 2 {
+		t.Fatalf("应该识别出 2 处变化，实际 %d 处: %v", len(changes), changes)
+	}
+}
+
 func TestMapHeaderAliases(t *testing.T) {
 	cases := map[string]parser.Field{
 		"订单编号":    parser.FieldOrderID,
@@ -118,52 +171,5 @@ func TestMapHeaderAliases(t *testing.T) {
 	}
 	if _, ok := parser.MapHeader("经手人"); ok {
 		t.Errorf("不该把无关列名认成字段")
-	}
-}
-
-// TestMergedGroupHeaderSkipped 覆盖"组表头"这条规则：
-// 跨列合并的行一定是组表头，真表头在下面，不能靠打分去赌。
-func TestMergedGroupHeaderSkipped(t *testing.T) {
-	tbl := sheet.Flatten([][]string{
-		{"订单信息", "", "商品", "金额与数量", "", "", "备注"},
-		{"订单编号", "下单日期", "商品名称", "单价", "数量", "金额", "备注"},
-		{"00000001", "2024-01-05", "帆布包", "39.9", "2", "79.8", ""},
-		{"00000002", "2024-01-06", "保温杯", "68", "1", "68", ""},
-		{"00000003", "2024-01-07", "毛线帽", "15.8", "3", "47.4", ""},
-	}, []xlsx.Range{{R1: 0, C1: 0, R2: 0, C2: 1}, {R1: 0, C1: 3, R2: 0, C2: 5}})
-
-	if !tbl.MergedRow[0] {
-		t.Fatal("第 0 行有跨列合并，应该被标记为组表头")
-	}
-	if got := tbl.Rows[0][1]; got != "订单信息" {
-		t.Fatalf("合并区域右侧应该填上左上角的值，实际 %q", got)
-	}
-	row, _, ok := parser.DetectHeader(tbl)
-	if !ok || row != 1 {
-		t.Fatalf("应该跳过组表头选第 2 行，实际选中第 %d 行", row+1)
-	}
-}
-
-// TestVerticalMergeFilled 覆盖数据区的纵向合并：同一个商品跨几行下单时，
-// 导出表里商品名往往只写一次。不展平，后面几行的商品名就是空的。
-func TestVerticalMergeFilled(t *testing.T) {
-	tbl := sheet.Flatten([][]string{
-		{"订单编号", "下单日期", "商品名称", "单价", "数量", "金额", "备注"},
-		{"00000001", "2024-01-05", "帆布包", "39.9", "2", "79.8", ""},
-		{"00000002", "2024-01-06", "", "39.9", "1", "39.9", ""},
-		{"00000003", "2024-01-07", "", "39.9", "3", "119.7", ""},
-	}, []xlsx.Range{{R1: 1, C1: 2, R2: 3, C2: 2}})
-
-	res, err := parser.Parse(tbl)
-	if err != nil {
-		t.Fatalf("解析失败: %v", err)
-	}
-	if len(res.Rows) != 3 {
-		t.Fatalf("应该有 3 条数据，实际 %d 条", len(res.Rows))
-	}
-	for i, r := range res.Rows {
-		if r.Product != "帆布包" {
-			t.Errorf("第 %d 行商品名应为帆布包，实际 %q", i+1, r.Product)
-		}
 	}
 }

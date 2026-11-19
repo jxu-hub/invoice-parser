@@ -4,8 +4,8 @@
 //
 //	go run ./cmd/inspect -file testdata/raw/shop06-2024-06-006.xlsx
 //
-// 它会告诉你表头定位在第几行、每列被认成什么类型和字段。
-// 比在日志里猜快得多。
+// 它会告诉你表头定位在第几行、每列被认成什么类型和字段、
+// 哪些行被隔离、哪些行被当成噪音跳过。比在日志里猜快得多。
 package main
 
 import (
@@ -49,17 +49,18 @@ func run(path string, show int) error {
 	res, err := parser.Parse(tbl)
 	if err != nil {
 		fmt.Printf("parse      FAILED: %v\n", err)
+		// 解析失败也把候选表头的分数打出来，方便判断是表头问题还是缺列
 		fmt.Println("\nheader candidates")
 		w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
-		fmt.Fprintln(w, "row\tscore\tnon-empty")
+		fmt.Fprintln(w, "row\tscore\tnon-empty\tmerged")
 		for r := 0; r < len(tbl.Rows) && r < 8; r++ {
-			fmt.Fprintf(w, "%d\t%.3f\t%d\n", r+1, parser.SplitScore(tbl, r), tbl.NonEmpty(r))
+			fmt.Fprintf(w, "%d\t%.3f\t%d\t%v\n", r+1, parser.SplitScore(tbl, r), tbl.NonEmpty(r), tbl.MergedRow[r])
 		}
 		return w.Flush()
 	}
 
 	fmt.Printf("header row %d (score %.3f)\n", res.HeaderRow+1, res.Score)
-	fmt.Printf("data rows  %d\n", len(res.Rows))
+	fmt.Printf("data rows  %d, isolated %d, skipped %d\n", len(res.Rows), len(res.Isolated), res.Skipped)
 
 	fmt.Println("\ncolumns")
 	for _, c := range res.Schema.Columns {
@@ -73,6 +74,13 @@ func run(path string, show int) error {
 		}
 		fmt.Printf("  %-2s  %-8s  %-5s  conf=%.2f  field=%-10s (%s)\n",
 			colLetter(c.Index), c.Name, c.Kind, c.Confidence, field, src)
+	}
+
+	if len(res.Isolated) > 0 {
+		fmt.Println("\nisolated rows")
+		for _, r := range res.Isolated {
+			fmt.Printf("  line %d: %s\n    %s\n", r.Line, r.Reason, strings.Join(r.Raw, " | "))
+		}
 	}
 
 	if len(res.Rows) > 0 && show > 0 {
