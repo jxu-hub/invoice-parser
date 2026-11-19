@@ -1,0 +1,1004 @@
+{
+  "sheets": [
+    {
+      "file": "raw/shop01-2024-01-001.xlsx",
+      "golden": "golden/shop01-2024-01-001.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-02-002.xlsx",
+      "golden": "golden/shop02-2024-02-002.csv",
+      "label": "date"
+    },
+    {
+      "file": "raw/shop03-2024-03-003.xlsx",
+      "golden": "golden/shop03-2024-03-003.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-04-004.xlsx",
+      "golden": "golden/shop04-2024-04-004.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-05-005.xlsx",
+      "golden": "golden/shop05-2024-05-005.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop06-2024-06-006.xlsx",
+      "golden": "golden/shop06-2024-06-006.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop07-2024-07-007.xlsx",
+      "golden": "golden/shop07-2024-07-007.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-08-008.xlsx",
+      "golden": "golden/shop08-2024-08-008.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop01-2024-09-009.xlsx",
+      "golden": "golden/shop01-2024-09-009.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-10-010.xlsx",
+      "golden": "golden/shop02-2024-10-010.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-11-011.xlsx",
+      "golden": "golden/shop03-2024-11-011.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop04-2024-12-012.xlsx",
+      "golden": "golden/shop04-2024-12-012.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-01-013.xlsx",
+      "golden": "golden/shop05-2024-01-013.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop06-2024-02-014.xlsx",
+      "golden": "golden/shop06-2024-02-014.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-03-015.xlsx",
+      "golden": "golden/shop07-2024-03-015.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-04-016.xlsx",
+      "golden": "golden/shop08-2024-04-016.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-05-017.xlsx",
+      "golden": "golden/shop01-2024-05-017.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-06-018.xlsx",
+      "golden": "golden/shop02-2024-06-018.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop03-2024-07-019.xlsx",
+      "golden": "golden/shop03-2024-07-019.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-08-020.xlsx",
+      "golden": "golden/shop04-2024-08-020.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-09-021.xlsx",
+      "golden": "golden/shop05-2024-09-021.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop06-2024-10-022.xlsx",
+      "golden": "golden/shop06-2024-10-022.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-11-023.xlsx",
+      "golden": "golden/shop07-2024-11-023.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-12-024.xlsx",
+      "golden": "golden/shop08-2024-12-024.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop01-2024-01-025.xlsx",
+      "golden": "golden/shop01-2024-01-025.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-02-026.xlsx",
+      "golden": "golden/shop02-2024-02-026.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-03-027.xlsx",
+      "golden": "golden/shop03-2024-03-027.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop04-2024-04-028.xlsx",
+      "golden": "golden/shop04-2024-04-028.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop05-2024-05-029.xlsx",
+      "golden": "golden/shop05-2024-05-029.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop06-2024-06-030.xlsx",
+      "golden": "golden/shop06-2024-06-030.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop07-2024-07-031.xlsx",
+      "golden": "golden/shop07-2024-07-031.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-08-032.xlsx",
+      "golden": "golden/shop08-2024-08-032.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-09-033.xlsx",
+      "golden": "golden/shop01-2024-09-033.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop02-2024-10-034.xlsx",
+      "golden": "golden/shop02-2024-10-034.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-11-035.xlsx",
+      "golden": "golden/shop03-2024-11-035.csv",
+      "label": "date"
+    },
+    {
+      "file": "raw/shop04-2024-12-036.xlsx",
+      "golden": "golden/shop04-2024-12-036.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop05-2024-01-037.xlsx",
+      "golden": "golden/shop05-2024-01-037.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop06-2024-02-038.xlsx",
+      "golden": "golden/shop06-2024-02-038.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-03-039.xlsx",
+      "golden": "golden/shop07-2024-03-039.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-04-040.xlsx",
+      "golden": "golden/shop08-2024-04-040.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-05-041.xlsx",
+      "golden": "golden/shop01-2024-05-041.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-06-042.xlsx",
+      "golden": "golden/shop02-2024-06-042.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop03-2024-07-043.xlsx",
+      "golden": "golden/shop03-2024-07-043.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop04-2024-08-044.xlsx",
+      "golden": "golden/shop04-2024-08-044.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop05-2024-09-045.xlsx",
+      "golden": "golden/shop05-2024-09-045.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop06-2024-10-046.xlsx",
+      "golden": "golden/shop06-2024-10-046.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-11-047.xlsx",
+      "golden": "golden/shop07-2024-11-047.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-12-048.xlsx",
+      "golden": "golden/shop08-2024-12-048.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-01-049.xlsx",
+      "golden": "golden/shop01-2024-01-049.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop02-2024-02-050.xlsx",
+      "golden": "golden/shop02-2024-02-050.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-03-051.xlsx",
+      "golden": "golden/shop03-2024-03-051.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-04-052.xlsx",
+      "golden": "golden/shop04-2024-04-052.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-05-053.xlsx",
+      "golden": "golden/shop05-2024-05-053.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop06-2024-06-054.xlsx",
+      "golden": "golden/shop06-2024-06-054.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-07-055.xlsx",
+      "golden": "golden/shop07-2024-07-055.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-08-056.xlsx",
+      "golden": "golden/shop08-2024-08-056.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-09-057.xlsx",
+      "golden": "golden/shop01-2024-09-057.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-10-058.xlsx",
+      "golden": "golden/shop02-2024-10-058.csv",
+      "label": "date"
+    },
+    {
+      "file": "raw/shop03-2024-11-059.xlsx",
+      "golden": "golden/shop03-2024-11-059.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-12-060.xlsx",
+      "golden": "golden/shop04-2024-12-060.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop05-2024-01-061.xlsx",
+      "golden": "golden/shop05-2024-01-061.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop06-2024-02-062.xlsx",
+      "golden": "golden/shop06-2024-02-062.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-03-063.xlsx",
+      "golden": "golden/shop07-2024-03-063.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-04-064.xlsx",
+      "golden": "golden/shop08-2024-04-064.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-05-065.xlsx",
+      "golden": "golden/shop01-2024-05-065.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-06-066.xlsx",
+      "golden": "golden/shop02-2024-06-066.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-07-067.xlsx",
+      "golden": "golden/shop03-2024-07-067.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-08-068.xlsx",
+      "golden": "golden/shop04-2024-08-068.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-09-069.xlsx",
+      "golden": "golden/shop05-2024-09-069.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop06-2024-10-070.xlsx",
+      "golden": "golden/shop06-2024-10-070.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop07-2024-11-071.xlsx",
+      "golden": "golden/shop07-2024-11-071.csv",
+      "label": "other"
+    },
+    {
+      "file": "raw/shop08-2024-12-072.xlsx",
+      "golden": "golden/shop08-2024-12-072.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-01-073.xlsx",
+      "golden": "golden/shop01-2024-01-073.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-02-074.xlsx",
+      "golden": "golden/shop02-2024-02-074.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop03-2024-03-075.xlsx",
+      "golden": "golden/shop03-2024-03-075.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-04-076.xlsx",
+      "golden": "golden/shop04-2024-04-076.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-05-077.xlsx",
+      "golden": "golden/shop05-2024-05-077.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop06-2024-06-078.xlsx",
+      "golden": "golden/shop06-2024-06-078.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-07-079.xlsx",
+      "golden": "golden/shop07-2024-07-079.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-08-080.xlsx",
+      "golden": "golden/shop08-2024-08-080.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-09-081.xlsx",
+      "golden": "golden/shop01-2024-09-081.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop02-2024-10-082.xlsx",
+      "golden": "golden/shop02-2024-10-082.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-11-083.xlsx",
+      "golden": "golden/shop03-2024-11-083.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-12-084.xlsx",
+      "golden": "golden/shop04-2024-12-084.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop05-2024-01-085.xlsx",
+      "golden": "golden/shop05-2024-01-085.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop06-2024-02-086.xlsx",
+      "golden": "golden/shop06-2024-02-086.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-03-087.xlsx",
+      "golden": "golden/shop07-2024-03-087.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-04-088.xlsx",
+      "golden": "golden/shop08-2024-04-088.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-05-089.xlsx",
+      "golden": "golden/shop01-2024-05-089.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-06-090.xlsx",
+      "golden": "golden/shop02-2024-06-090.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-07-091.xlsx",
+      "golden": "golden/shop03-2024-07-091.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-08-092.xlsx",
+      "golden": "golden/shop04-2024-08-092.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-09-093.xlsx",
+      "golden": "golden/shop05-2024-09-093.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop06-2024-10-094.xlsx",
+      "golden": "golden/shop06-2024-10-094.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-11-095.xlsx",
+      "golden": "golden/shop07-2024-11-095.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-12-096.xlsx",
+      "golden": "golden/shop08-2024-12-096.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-01-097.xlsx",
+      "golden": "golden/shop01-2024-01-097.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop02-2024-02-098.xlsx",
+      "golden": "golden/shop02-2024-02-098.csv",
+      "label": "date"
+    },
+    {
+      "file": "raw/shop03-2024-03-099.xlsx",
+      "golden": "golden/shop03-2024-03-099.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-04-100.xlsx",
+      "golden": "golden/shop04-2024-04-100.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-05-101.xlsx",
+      "golden": "golden/shop05-2024-05-101.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop06-2024-06-102.xlsx",
+      "golden": "golden/shop06-2024-06-102.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop07-2024-07-103.xlsx",
+      "golden": "golden/shop07-2024-07-103.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-08-104.xlsx",
+      "golden": "golden/shop08-2024-08-104.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-09-105.xlsx",
+      "golden": "golden/shop01-2024-09-105.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop02-2024-10-106.xlsx",
+      "golden": "golden/shop02-2024-10-106.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-11-107.xlsx",
+      "golden": "golden/shop03-2024-11-107.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop04-2024-12-108.xlsx",
+      "golden": "golden/shop04-2024-12-108.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-01-109.xlsx",
+      "golden": "golden/shop05-2024-01-109.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop06-2024-02-110.xlsx",
+      "golden": "golden/shop06-2024-02-110.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop07-2024-03-111.xlsx",
+      "golden": "golden/shop07-2024-03-111.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-04-112.xlsx",
+      "golden": "golden/shop08-2024-04-112.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-05-113.xlsx",
+      "golden": "golden/shop01-2024-05-113.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-06-114.xlsx",
+      "golden": "golden/shop02-2024-06-114.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-07-115.xlsx",
+      "golden": "golden/shop03-2024-07-115.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-08-116.xlsx",
+      "golden": "golden/shop04-2024-08-116.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-09-117.xlsx",
+      "golden": "golden/shop05-2024-09-117.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop06-2024-10-118.xlsx",
+      "golden": "golden/shop06-2024-10-118.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-11-119.xlsx",
+      "golden": "golden/shop07-2024-11-119.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-12-120.xlsx",
+      "golden": "golden/shop08-2024-12-120.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop01-2024-01-121.xlsx",
+      "golden": "golden/shop01-2024-01-121.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop02-2024-02-122.xlsx",
+      "golden": "golden/shop02-2024-02-122.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-03-123.xlsx",
+      "golden": "golden/shop03-2024-03-123.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-04-124.xlsx",
+      "golden": "golden/shop04-2024-04-124.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop05-2024-05-125.xlsx",
+      "golden": "golden/shop05-2024-05-125.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop06-2024-06-126.xlsx",
+      "golden": "golden/shop06-2024-06-126.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-07-127.xlsx",
+      "golden": "golden/shop07-2024-07-127.csv",
+      "label": "date"
+    },
+    {
+      "file": "raw/shop08-2024-08-128.xlsx",
+      "golden": "golden/shop08-2024-08-128.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-09-129.xlsx",
+      "golden": "golden/shop01-2024-09-129.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-10-130.xlsx",
+      "golden": "golden/shop02-2024-10-130.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-11-131.xlsx",
+      "golden": "golden/shop03-2024-11-131.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-12-132.xlsx",
+      "golden": "golden/shop04-2024-12-132.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-01-133.xlsx",
+      "golden": "golden/shop05-2024-01-133.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop06-2024-02-134.xlsx",
+      "golden": "golden/shop06-2024-02-134.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop07-2024-03-135.xlsx",
+      "golden": "golden/shop07-2024-03-135.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-04-136.xlsx",
+      "golden": "golden/shop08-2024-04-136.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop01-2024-05-137.xlsx",
+      "golden": "golden/shop01-2024-05-137.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-06-138.xlsx",
+      "golden": "golden/shop02-2024-06-138.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-07-139.xlsx",
+      "golden": "golden/shop03-2024-07-139.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-08-140.xlsx",
+      "golden": "golden/shop04-2024-08-140.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-09-141.xlsx",
+      "golden": "golden/shop05-2024-09-141.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop06-2024-10-142.xlsx",
+      "golden": "golden/shop06-2024-10-142.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop07-2024-11-143.xlsx",
+      "golden": "golden/shop07-2024-11-143.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-12-144.xlsx",
+      "golden": "golden/shop08-2024-12-144.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop01-2024-01-145.xlsx",
+      "golden": "golden/shop01-2024-01-145.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-02-146.xlsx",
+      "golden": "golden/shop02-2024-02-146.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-03-147.xlsx",
+      "golden": "golden/shop03-2024-03-147.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-04-148.xlsx",
+      "golden": "golden/shop04-2024-04-148.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-05-149.xlsx",
+      "golden": "golden/shop05-2024-05-149.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop06-2024-06-150.xlsx",
+      "golden": "golden/shop06-2024-06-150.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop07-2024-07-151.xlsx",
+      "golden": "golden/shop07-2024-07-151.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-08-152.xlsx",
+      "golden": "golden/shop08-2024-08-152.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-09-153.xlsx",
+      "golden": "golden/shop01-2024-09-153.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop02-2024-10-154.xlsx",
+      "golden": "golden/shop02-2024-10-154.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-11-155.xlsx",
+      "golden": "golden/shop03-2024-11-155.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop04-2024-12-156.xlsx",
+      "golden": "golden/shop04-2024-12-156.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-01-157.xlsx",
+      "golden": "golden/shop05-2024-01-157.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop06-2024-02-158.xlsx",
+      "golden": "golden/shop06-2024-02-158.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-03-159.xlsx",
+      "golden": "golden/shop07-2024-03-159.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-04-160.xlsx",
+      "golden": "golden/shop08-2024-04-160.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-05-161.xlsx",
+      "golden": "golden/shop01-2024-05-161.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop02-2024-06-162.xlsx",
+      "golden": "golden/shop02-2024-06-162.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-07-163.xlsx",
+      "golden": "golden/shop03-2024-07-163.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-08-164.xlsx",
+      "golden": "golden/shop04-2024-08-164.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-09-165.xlsx",
+      "golden": "golden/shop05-2024-09-165.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop06-2024-10-166.xlsx",
+      "golden": "golden/shop06-2024-10-166.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop07-2024-11-167.xlsx",
+      "golden": "golden/shop07-2024-11-167.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop08-2024-12-168.xlsx",
+      "golden": "golden/shop08-2024-12-168.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-01-169.xlsx",
+      "golden": "golden/shop01-2024-01-169.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop02-2024-02-170.xlsx",
+      "golden": "golden/shop02-2024-02-170.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop03-2024-03-171.xlsx",
+      "golden": "golden/shop03-2024-03-171.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-04-172.xlsx",
+      "golden": "golden/shop04-2024-04-172.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-05-173.xlsx",
+      "golden": "golden/shop05-2024-05-173.csv",
+      "label": "merged"
+    },
+    {
+      "file": "raw/shop06-2024-06-174.xlsx",
+      "golden": "golden/shop06-2024-06-174.csv",
+      "label": "money"
+    },
+    {
+      "file": "raw/shop07-2024-07-175.xlsx",
+      "golden": "golden/shop07-2024-07-175.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-08-176.xlsx",
+      "golden": "golden/shop08-2024-08-176.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-09-177.xlsx",
+      "golden": "golden/shop01-2024-09-177.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-10-178.xlsx",
+      "golden": "golden/shop02-2024-10-178.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-11-179.xlsx",
+      "golden": "golden/shop03-2024-11-179.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop04-2024-12-180.xlsx",
+      "golden": "golden/shop04-2024-12-180.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-01-181.xlsx",
+      "golden": "golden/shop05-2024-01-181.csv",
+      "label": "other"
+    },
+    {
+      "file": "raw/shop06-2024-02-182.xlsx",
+      "golden": "golden/shop06-2024-02-182.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-03-183.xlsx",
+      "golden": "golden/shop07-2024-03-183.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-04-184.xlsx",
+      "golden": "golden/shop08-2024-04-184.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-05-185.xlsx",
+      "golden": "golden/shop01-2024-05-185.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-06-186.xlsx",
+      "golden": "golden/shop02-2024-06-186.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop03-2024-07-187.xlsx",
+      "golden": "golden/shop03-2024-07-187.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop04-2024-08-188.xlsx",
+      "golden": "golden/shop04-2024-08-188.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop05-2024-09-189.xlsx",
+      "golden": "golden/shop05-2024-09-189.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop06-2024-10-190.xlsx",
+      "golden": "golden/shop06-2024-10-190.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop07-2024-11-191.xlsx",
+      "golden": "golden/shop07-2024-11-191.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-12-192.xlsx",
+      "golden": "golden/shop08-2024-12-192.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop01-2024-01-193.xlsx",
+      "golden": "golden/shop01-2024-01-193.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop02-2024-02-194.xlsx",
+      "golden": "golden/shop02-2024-02-194.csv",
+      "label": "header"
+    },
+    {
+      "file": "raw/shop03-2024-03-195.xlsx",
+      "golden": "golden/shop03-2024-03-195.csv",
+      "label": "other"
+    },
+    {
+      "file": "raw/shop04-2024-04-196.xlsx",
+      "golden": "golden/shop04-2024-04-196.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop05-2024-05-197.xlsx",
+      "golden": "golden/shop05-2024-05-197.csv",
+      "label": "date"
+    },
+    {
+      "file": "raw/shop06-2024-06-198.xlsx",
+      "golden": "golden/shop06-2024-06-198.csv",
+      "label": "date"
+    },
+    {
+      "file": "raw/shop07-2024-07-199.xlsx",
+      "golden": "golden/shop07-2024-07-199.csv",
+      "label": "clean"
+    },
+    {
+      "file": "raw/shop08-2024-08-200.xlsx",
+      "golden": "golden/shop08-2024-08-200.csv",
+      "label": "clean"
+    }
+  ]
+}
