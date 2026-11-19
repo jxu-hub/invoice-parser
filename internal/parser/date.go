@@ -25,3 +25,9 @@ func ParseDate(raw string) (time.Time, error) {
 func FormatDate(t time.Time) string {
 	return t.Format("2006-01-02")
 }
+
+// IsDate 判断字符串能否被解析成日期。
+func IsDate(s string) bool {
+	_, err := ParseDate(s)
+	return err == nil
+}
